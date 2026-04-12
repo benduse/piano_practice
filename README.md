@@ -1,4 +1,4 @@
-# vi-IV-I-V Piano Practice Program Website
+# VI-IV-I-V Piano Practice Program Website
 
 ## Why I Created This Website
 
