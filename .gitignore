@@ -1,0 +1,58 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*~   # backup files
+*.swp
+*.swo
+
+# Logs and runtime
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+secrets.yml
+*.sh
+
+# Python (if applicable)
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env/ 
+.venv/
+
+# Node (if applicable)
+node_modules/
+
+# Build / distribution
+build/
+dist/
+out/
+target/
+
+# Database / artifacts
+*.sqlite3
+*.db
+*.sql
+
+# Audio / large media (only if you do NOT want to commit recordings)
+*.wav
+*.mp3
+*.m4a
+*.flac
+
+# Misc
+*.bak
+*.tmp
