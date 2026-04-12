@@ -1,0 +1,1435 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Playables SDK -->
+<script>// Playables SDK v1.0.0
+// Game lifecycle bridge: rAF-based game-ready detection + event communication
+(function() {
+  'use strict';
+
+  // Idempotency: skip if already initialized (e.g., server-side injection
+  // followed by client-side inject-javascript via the Bloks webview component).
+  if (window.playablesSDK) return;
+
+  var HANDLER_NAME = 'playablesGameEventHandler';
+  var ANDROID_BRIDGE_NAME = '_MetaPlayablesBridge';
+  var RAF_FRAME_THRESHOLD = 3;
+
+  var gameReadySent = false;
+  var firstInteractionSent = false;
+  var errorSent = false;
+  var frameCount = 0;
+  var originalRAF = window.requestAnimationFrame;
+
+  // --- Transport Layer ---
+
+  function hasIOSBridge() {
+    return !!(window.webkit &&
+              window.webkit.messageHandlers &&
+              window.webkit.messageHandlers[HANDLER_NAME]);
+  }
+
+  function hasAndroidBridge() {
+    return !!(window[ANDROID_BRIDGE_NAME] &&
+              typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
+  }
+
+  function isInIframe() {
+    return !!(window.parent && window.parent !== window);
+  }
+
+  function sendEvent(eventName, payload) {
+    var message = {
+      type: eventName,
+      payload: payload || {},
+      timestamp: Date.now()
+    };
+
+    if (hasIOSBridge()) {
+      try {
+        window.webkit.messageHandlers[HANDLER_NAME].postMessage(message);
+      } catch (e) { /* ignore */ }
+      return;
+    }
+
+    if (hasAndroidBridge()) {
+    try {
+      var p = payload || {};
+      p.__secureToken = window.__fbAndroidBridgeAuthToken || '';
+      window[ANDROID_BRIDGE_NAME].postEvent(
+        eventName,
+        JSON.stringify(p)
+      );
+    } catch (e) { /* ignore */ }
+    return;
+  }
+
+    if (isInIframe()) {
+      try {
+        window.parent.postMessage(message, '*');
+      } catch (e) { /* ignore */ }
+      return;
+    }
+  }
+
+  // --- rAF Game-Ready Detection ---
+
+  function onFrame() {
+    if (gameReadySent) return;
+
+    frameCount++;
+    if (frameCount >= RAF_FRAME_THRESHOLD) {
+      gameReadySent = true;
+      sendEvent('game_ready', {
+        frame_count: frameCount,
+        detected_at: Date.now()
+      });
+      return;
+    }
+
+    originalRAF.call(window, onFrame);
+  }
+
+  if (originalRAF) {
+    window.requestAnimationFrame = function(callback) {
+      if (!gameReadySent) {
+        return originalRAF.call(window, function(timestamp) {
+          frameCount++;
+          if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
+            gameReadySent = true;
+            sendEvent('game_ready', {
+              frame_count: frameCount,
+              detected_at: Date.now()
+            });
+          }
+          callback(timestamp);
+        });
+      }
+      return originalRAF.call(window, callback);
+    };
+  }
+
+  // --- First User Interaction Detection ---
+
+  function setupFirstInteractionDetection() {
+    var events = ['touchstart', 'mousedown', 'keydown'];
+
+    function onFirstInteraction() {
+      if (firstInteractionSent) return;
+      firstInteractionSent = true;
+      sendEvent('user_interaction_start', null);
+
+      for (var i = 0; i < events.length; i++) {
+        document.removeEventListener(events[i], onFirstInteraction, true);
+      }
+    }
+
+    for (var i = 0; i < events.length; i++) {
+      document.addEventListener(events[i], onFirstInteraction, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupFirstInteractionDetection);
+  } else {
+    setupFirstInteractionDetection();
+  }
+
+  // --- Auto Error Capture ---
+
+  window.addEventListener('error', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    sendEvent('error', {
+      message: event.message || 'Unknown error',
+      source: event.filename || '',
+      lineno: event.lineno || 0,
+      colno: event.colno || 0,
+      auto_captured: true
+    });
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    var reason = event.reason;
+    sendEvent('error', {
+      message: (reason instanceof Error) ? reason.message : String(reason),
+      type: 'unhandled_promise_rejection',
+      auto_captured: true
+    });
+  });
+
+  // --- Public API ---
+
+  window.playablesSDK = {
+    complete: function(score) {
+      sendEvent('game_ended', {
+        score: score,
+        completed: true
+      });
+    },
+
+    error: function(message) {
+      if (errorSent) return;
+      errorSent = true;
+      sendEvent('error', {
+        message: message || 'Unknown error',
+        auto_captured: false
+      });
+    },
+
+    sendEvent: function(eventName, payload) {
+      if (!eventName || typeof eventName !== 'string') return;
+      sendEvent(eventName, payload);
+    }
+  };
+
+  // Kick off rAF detection in case no game code calls rAF immediately
+  if (originalRAF) {
+    originalRAF.call(window, onFrame);
+  }
+})();</script>
+<script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vi-IV-I-V Piano Practice Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+--bg: #f7f9fc;
+--card: #ffffff;
+--text: #1e293b;
+--muted: #64748b;
+--primary: #6366f1;
+--primary-dark: #4f46e5;
+--gradient: linear-gradient(135deg, #4338ca 0%, #7c3aed 50%, #a855f7 100%);
+--accent: #f59e0b;
+--border: #e2e8f0;
+--success: #10b981;
+--chord-color: #8b5cf6;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+html {
+scroll-behavior: smooth;
+}
+
+body {
+font-family: 'Poppins', sans-serif;
+background: var(--bg);
+color: var(--text);
+line-height: 1.6;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 1.25rem;
+}
+
+/* Header */
+header {
+background: var(--gradient);
+color: white;
+padding: 4rem 0 5rem;
+position: relative;
+overflow: hidden;
+}
+
+header::after {
+content: '';
+position: absolute;
+bottom: -2px;
+left: 0;
+width: 100%;
+height: 60px;
+background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120'%3E%3Cpath fill='%23f7f9fc' d='M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z'%3E%3C/path%3E%3C/svg%3E") no-repeat;
+background-size: cover;
+}
+
+.header-content {
+text-align: center;
+position: relative;
+z-index: 2;
+}
+
+h1 {
+font-size: clamp(2rem, 5vw, 3.5rem);
+font-weight: 700;
+margin-bottom: 0.5rem;
+letter-spacing: -0.02em;
+}
+
+.subtitle {
+font-size: clamp(1rem, 2.5vw, 1.25rem);
+opacity: 0.95;
+font-weight: 300;
+margin-bottom: 2rem;
+}
+
+.header-chords {
+display: inline-flex;
+gap: 0.75rem;
+flex-wrap: wrap;
+justify-content: center;
+margin-top: 1rem;
+}
+
+.chord-pill {
+background: rgba(255,255,255,0.2);
+backdrop-filter: blur(10px);
+padding: 0.6rem 1.2rem;
+border-radius: 50px;
+font-family: 'JetBrains Mono', monospace;
+font-weight: 600;
+font-size: 1.1rem;
+border: 1px solid rgba(255,255,255,0.3);
+}
+
+nav {
+position: sticky;
+top: 0;
+background: var(--card);
+box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+z-index: 100;
+padding: 0.75rem 0;
+}
+
+.nav-links {
+display: flex;
+gap: 1.5rem;
+justify-content: center;
+flex-wrap: wrap;
+}
+
+.nav-links a {
+color: var(--muted);
+text-decoration: none;
+font-weight: 500;
+font-size: 0.95rem;
+transition: color 0.2s;
+}
+
+.nav-links a:hover {
+color: var(--primary);
+}
+
+section {
+padding: 4rem 0;
+}
+
+.section-title {
+font-size: clamp(1.75rem, 4vw, 2.5rem);
+font-weight: 700;
+margin-bottom: 1rem;
+text-align: center;
+}
+
+.section-desc {
+text-align: center;
+color: var(--muted);
+max-width: 700px;
+margin: 0 auto 3rem;
+font-size: 1.05rem;
+}
+
+.card {
+background: var(--card);
+border-radius: 16px;
+padding: 2rem;
+box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+border: 1px solid var(--border);
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+transform: translateY(-2px);
+box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+}
+
+.overview-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+margin-top: 2rem;
+}
+
+.chord-display {
+display: flex;
+gap: 1rem;
+justify-content: center;
+margin: 1.5rem 0;
+flex-wrap: wrap;
+}
+
+.chord-box {
+background: var(--gradient);
+color: white;
+padding: 1.25rem 1.5rem;
+border-radius: 12px;
+text-align: center;
+min-width: 90px;
+}
+
+.chord-name {
+font-family: 'JetBrains Mono', monospace;
+font-size: 1.75rem;
+font-weight: 600;
+display: block;
+}
+
+.chord-degree {
+font-size: 0.85rem;
+opacity: 0.9;
+margin-top: 0.25rem;
+}
+
+.nashville-label {
+background: var(--accent);
+color: white;
+display: inline-block;
+padding: 0.4rem 1rem;
+border-radius: 50px;
+font-weight: 600;
+font-size: 0.9rem;
+margin-bottom: 1rem;
+}
+
+/* Timeline */
+.timeline {
+position: relative;
+max-width: 1000px;
+margin: 0 auto;
+}
+
+.timeline::before {
+content: '';
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+width: 3px;
+height: 100%;
+background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+border-radius: 3px;
+}
+
+.month-block {
+position: relative;
+margin-bottom: 3rem;
+}
+
+.month-header {
+background: var(--gradient);
+color: white;
+padding: 1rem 2rem;
+border-radius: 12px;
+display: inline-block;
+font-weight: 600;
+font-size: 1.2rem;
+margin-bottom: 1.5rem;
+position: relative;
+left: 50%;
+transform: translateX(-50%);
+z-index: 2;
+}
+
+.weeks-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 1.5rem;
+margin-top: 2rem;
+}
+
+.week-card {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 1.5rem;
+}
+
+.week-title {
+color: var(--primary);
+font-weight: 600;
+margin-bottom: 0.75rem;
+font-size: 1.1rem;
+}
+
+.song-list {
+list-style: none;
+margin: 0.75rem 0;
+}
+
+.song-list li {
+padding: 0.4rem 0;
+padding-left: 1.5rem;
+position: relative;
+font-size: 0.95rem;
+}
+
+.song-list li::before {
+content: '♪';
+position: absolute;
+left: 0;
+color: var(--chord-color);
+font-weight: 600;
+}
+
+.goal-box {
+background: #f8fafc;
+border-left: 3px solid var(--success);
+padding: 0.75rem 1rem;
+border-radius: 6px;
+margin-top: 1rem;
+font-size: 0.9rem;
+}
+
+.goal-box strong {
+color: var(--success);
+}
+
+.daily-routine {
+background: var(--card);
+border-radius: 16px;
+padding: 2rem;
+margin-top: 3rem;
+border: 2px solid var(--primary);
+}
+
+.routine-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1.5rem;
+margin-top: 1.5rem;
+}
+
+.routine-item {
+text-align: center;
+}
+
+.routine-time {
+background: var(--primary);
+color: white;
+padding: 0.5rem 1rem;
+border-radius: 50px;
+display: inline-block;
+font-weight: 600;
+margin-bottom: 0.5rem;
+font-size: 0.9rem;
+}
+
+/* Transpose Tool */
+.transpose-tool {
+text-align: center;
+margin: 3rem 0 2rem;
+}
+
+.key-buttons {
+display: flex;
+flex-wrap: wrap;
+gap: 0.75rem;
+justify-content: center;
+margin: 1.5rem 0;
+}
+
+.key-btn {
+background: var(--card);
+border: 2px solid var(--border);
+padding: 0.75rem 1.25rem;
+border-radius: 10px;
+cursor: pointer;
+font-weight: 600;
+font-family: 'JetBrains Mono', monospace;
+transition: all 0.2s;
+font-size: 1rem;
+}
+
+.key-btn:hover {
+border-color: var(--primary);
+transform: translateY(-2px);
+}
+
+.key-btn.active {
+background: var(--primary);
+color: white;
+border-color: var(--primary);
+}
+
+.transpose-display {
+background: var(--card);
+border-radius: 16px;
+padding: 2rem;
+max-width: 600px;
+margin: 0 auto;
+border: 1px solid var(--border);
+}
+
+#currentKey {
+font-size: 1.5rem;
+font-weight: 700;
+color: var(--primary);
+margin-bottom: 1rem;
+}
+
+/* Song Library */
+.library-controls {
+display: flex;
+gap: 1rem;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+justify-content: space-between;
+align-items: center;
+}
+
+.search-box {
+flex: 1;
+min-width: 250px;
+position: relative;
+}
+
+.search-box input {
+width: 100%;
+padding: 0.875rem 1rem 0.875rem 3rem;
+border: 2px solid var(--border);
+border-radius: 12px;
+font-size: 1rem;
+font-family: 'Poppins', sans-serif;
+transition: border 0.2s;
+}
+
+.search-box input:focus {
+outline: none;
+border-color: var(--primary);
+}
+
+.search-box::before {
+content: '🔍';
+position: absolute;
+left: 1rem;
+top: 50%;
+transform: translateY(-50%);
+font-size: 1.2rem;
+}
+
+.filter-buttons {
+display: flex;
+gap: 0.5rem;
+flex-wrap: wrap;
+}
+
+.filter-btn {
+padding: 0.6rem 1.1rem;
+background: var(--card);
+border: 2px solid var(--border);
+border-radius: 50px;
+cursor: pointer;
+font-size: 0.9rem;
+font-weight: 500;
+transition: all 0.2s;
+}
+
+.filter-btn:hover {
+border-color: var(--primary);
+}
+
+.filter-btn.active {
+background: var(--primary);
+color: white;
+border-color: var(--primary);
+}
+
+.song-table-container {
+overflow-x: auto;
+border-radius: 12px;
+border: 1px solid var(--border);
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+background: var(--card);
+}
+
+thead {
+background: #f8fafc;
+position: sticky;
+top: 0;
+}
+
+th {
+padding: 1rem;
+text-align: left;
+font-weight: 600;
+font-size: 0.9rem;
+color: var(--muted);
+text-transform: uppercase;
+letter-spacing: 0.05em;
+border-bottom: 2px solid var(--border);
+}
+
+td {
+padding: 1rem;
+border-bottom: 1px solid var(--border);
+font-size: 0.95rem;
+}
+
+tbody tr:hover {
+background: #f8fafc;
+}
+
+tbody tr:last-child td {
+border-bottom: none;
+}
+
+.chord-inline {
+font-family: 'JetBrains Mono', monospace;
+color: var(--chord-color);
+font-weight: 600;
+background: rgba(139, 92, 246, 0.1);
+padding: 0.2rem 0.5rem;
+border-radius: 6px;
+}
+
+.category-badge {
+display: inline-block;
+padding: 0.35rem 0.75rem;
+border-radius: 50px;
+font-size: 0.8rem;
+font-weight: 600;
+}
+
+.cat-pop { background: #dbeafe; color: #1e40af; }
+.cat-artist { background: #fce7f3; color: #9f1239; }
+.cat-hymn { background: #d1fae5; color: #065f46; }
+.cat-classic { background: #fef3c7; color: #92400e; }
+
+/* Tips Section */
+.tips-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 1.5rem;
+margin-top: 2rem;
+}
+
+.tip-card {
+background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+border-radius: 16px;
+padding: 2rem;
+border: 1px solid var(--border);
+position: relative;
+overflow: hidden;
+}
+
+.tip-card::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 5px;
+height: 100%;
+background: var(--gradient);
+}
+
+.tip-icon {
+font-size: 2.5rem;
+margin-bottom: 1rem;
+}
+
+.tip-card h3 {
+font-size: 1.25rem;
+margin-bottom: 0.75rem;
+color: var(--text);
+}
+
+.tracker-box {
+background: var(--card);
+border-radius: 16px;
+padding: 2rem;
+margin-top: 2rem;
+text-align: center;
+border: 2px dashed var(--border);
+}
+
+/* Footer */
+footer {
+background: var(--text);
+color: white;
+text-align: center;
+padding: 3rem 0;
+margin-top: 4rem;
+}
+
+.btn {
+background: var(--primary);
+color: white;
+border: none;
+padding: 1rem 2rem;
+border-radius: 12px;
+font-size: 1rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+display: inline-flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.btn:hover {
+background: var(--primary-dark);
+transform: translateY(-2px);
+box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn-secondary {
+background: var(--card);
+color: var(--primary);
+border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+background: var(--primary);
+color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+section {
+padding: 2.5rem 0;
+}
+
+.timeline::before {
+left: 10px;
+}
+
+.month-header {
+left: 0;
+transform: none;
+}
+
+.card {
+padding: 1.5rem;
+}
+
+th, td {
+padding: 0.75rem 0.5rem;
+font-size: 0.85rem;
+}
+
+/* Stack table on mobile */
+.song-table-container {
+border: none;
+}
+
+table, thead, tbody, th, td, tr {
+display: block;
+}
+
+thead {
+display: none;
+}
+
+tr {
+margin-bottom: 1rem;
+border: 1px solid var(--border);
+border-radius: 12px;
+overflow: hidden;
+}
+
+td {
+border: none;
+position: relative;
+padding-left: 50%;
+text-align: right;
+border-bottom: 1px solid var(--border);
+}
+
+td:last-child {
+border-bottom: none;
+}
+
+td::before {
+content: attr(data-label);
+position: absolute;
+left: 1rem;
+width: 45%;
+text-align: left;
+font-weight: 600;
+color: var(--muted);
+font-size: 0.8rem;
+text-transform: uppercase;
+}
+
+.nav-links {
+font-size: 0.85rem;
+gap: 1rem;
+}
+}
+
+/* Print Styles */
+@media print {
+nav, .btn, .library-controls, footer, .transpose-tool .key-buttons {
+display: none !important;
+}
+
+body {
+background: white;
+}
+
+.card, .tip-card, .week-card {
+box-shadow: none;
+border: 1px solid #ccc;
+break-inside: avoid;
+}
+
+header {
+padding: 2rem 0;
+}
+
+section {
+padding: 1.5rem 0;
+}
+
+.timeline::before {
+display: none;
+}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+<div class="header-content">
+<h1>vi-IV-I-V Piano Practice Program</h1>
+<p class="subtitle">Master Am-F-C-G with 50 songs in 3 months</p>
+<div class="header-chords">
+<div class="chord-pill">Am</div>
+<div class="chord-pill">F</div>
+<div class="chord-pill">C</div>
+<div class="chord-pill">G</div>
+</div>
+</div>
+</div>
+</header>
+
+<nav>
+<div class="container">
+<div class="nav-links">
+<a href="#overview">Overview</a>
+<a href="#program">3-Month Plan</a>
+<a href="#transpose">Transpose Tool</a>
+<a href="#library">Song Library</a>
+<a href="#tips">Practice Tips</a>
+</div>
+</div>
+</nav>
+
+<section id="overview">
+<div class="container">
+<h2 class="section-title">Understanding vi-IV-I-V</h2>
+<p class="section-desc">This is one of the most popular chord progressions in modern music. Used in pop, rock, worship, EDM, and more. Once you learn it, you can play hundreds of songs.</p>
+<div class="overview-grid">
+<div class="card">
+<div class="nashville-label">Nashville Numbers</div>
+<h3>The Formula</h3>
+<p>In any major key, the vi-IV-I-V progression uses:</p>
+<div class="chord-display">
+<div class="chord-box">
+<span class="chord-name">vi</span>
+<span class="chord-degree">6th minor</span>
+</div>
+<div class="chord-box">
+<span class="chord-name">IV</span>
+<span class="chord-degree">4th major</span>
+</div>
+<div class="chord-box">
+<span class="chord-name">I</span>
+<span class="chord-degree">1st major</span>
+</div>
+<div class="chord-box">
+<span class="chord-name">V</span>
+<span class="chord-degree">5th major</span>
+</div>
+</div>
+<p>It's a loop: minor → major → major → major. The emotional pull from minor to major creates that bittersweet, nostalgic sound.</p>
+</div>
+<div class="card">
+<div class="nashville-label">Key of C Major</div>
+<h3>Your Starting Point</h3>
+<p>In C major, the chords are:</p>
+<div class="chord-display">
+<div class="chord-box">
+<span class="chord-name">Am</span>
+<span class="chord-degree">vi</span>
+</div>
+<div class="chord-box">
+<span class="chord-name">F</span>
+<span class="chord-degree">IV</span>
+</div>
+<div class="chord-box">
+<span class="chord-name">C</span>
+<span class="chord-degree">I</span>
+</div>
+<div class="chord-box">
+<span class="chord-name">G</span>
+<span class="chord-degree">V</span>
+</div>
+</div>
+<p>Start here because C major has no sharps or flats. All white keys!</p>
+</div>
+<div class="card">
+<div class="nashville-label">How to Transpose</div>
+<h3>Play in Any Key</h3>
+<p>To move this progression to another key:</p>
+<ol style="margin-left: 1.5rem; margin-top: 1rem;">
+<li>Find the major scale of your new key</li>
+<li>Count: 6th degree = minor, 4th = major, 1st = major, 5th = major</li>
+<li>Example G major: Em (vi) - C (IV) - G (I) - D (V)</li>
+</ol>
+<p style="margin-top: 1rem;">Or use the <a href="#transpose" style="color: var(--primary); font-weight: 600;">Transpose Tool</a> below!</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="program" style="background: white;">
+<div class="container">
+<h2 class="section-title">3-Month Practice Program</h2>
+<p class="section-desc">Follow this structured plan to go from beginner to confidently playing 50 songs. Practice 30-45 minutes daily.</p>
+<div class="timeline">
+<div class="month-block">
+<div class="month-header">MONTH 1: Foundation & First 15 Songs</div>
+<div class="weeks-grid">
+<div class="week-card">
+<div class="week-title">Week 1: Chord Shapes</div>
+<ul class="song-list">
+<li>Learn C, Am, F, G in root position</li>
+<li>Practice chord transitions Am→F→C→G</li>
+<li>Play with metronome: 60 BPM</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Clean transitions, 1 chord per measure</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 2: Songs 1-4</div>
+<ul class="song-list">
+<li>Let It Be – The Beatles</li>
+<li>No Woman No Cry – Bob Marley</li>
+<li>With or Without You – U2</li>
+<li>You Gotta Be – Des'ree</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Play 4 songs start to finish, simple rhythm</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 3: Songs 5-10</div>
+<ul class="song-list">
+<li>Apologize – OneRepublic</li>
+<li>Africa – Toto</li>
+<li>Poker Face – Lady Gaga</li>
+<li>I'm Yours – Jason Mraz</li>
+<li>Secrets – OneRepublic</li>
+<li>Love Me Like You Do – Ellie Goulding</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Add left-hand bass notes C-A-F-G</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 4: Songs 11-15</div>
+<ul class="song-list">
+<li>She Will Be Loved – Maroon 5</li>
+<li>What Goes Around – Justin Timberlake</li>
+<li>Bulletproof – La Roux</li>
+<li>The Man Who Can't Be Moved – The Script</li>
+<li>When I Come Around – Green Day</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Introduce inversions: start F chord on A</div>
+</div>
+</div>
+</div>
+
+<div class="month-block">
+<div class="month-header">MONTH 2: Rhythm, Inversions & Artists You Love</div>
+<div class="weeks-grid">
+<div class="week-card">
+<div class="week-title">Week 5: Songs 16-22</div>
+<ul class="song-list">
+<li>Chandelier – Sia</li>
+<li>Elastic Heart – Sia</li>
+<li>Cheap Thrills – Sia</li>
+<li>Just The Way You Are – Bruno Mars</li>
+<li>When I Was Your Man – Bruno Mars</li>
+<li>Grenade – Bruno Mars</li>
+<li>Enemigos – Aitana</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Sia ballad style: broken chords RH, sustain pedal</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 6: Songs 23-28</div>
+<ul class="song-list">
+<li>Sin Ti – Becky G</li>
+<li>Mayores – Becky G</li>
+<li>Faded – Alan Walker</li>
+<li>Alone – Alan Walker</li>
+<li>On My Way – Alan Walker</li>
+<li>The Nights – Avicii</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> EDM groove: play chords on beats 2 & 4 only</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 7: Songs 29-34</div>
+<ul class="song-list">
+<li>Wake Me Up – Avicii</li>
+<li>Demons – Imagine Dragons</li>
+<li>Radioactive – Imagine Dragons</li>
+<li>Counting Stars – OneRepublic</li>
+<li>All of Me – John Legend</li>
+<li>We Don't Talk Anymore – Charlie Puth</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Syncopated pop rhythms, anticipate chord changes</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 8: Hymns Intro 35-40</div>
+<ul class="song-list">
+<li>Amazing Grace – Traditional</li>
+<li>How Great Thou Art – Hymn</li>
+<li>10,000 Reasons – Matt Redman</li>
+<li>Cornerstone – Hillsong</li>
+<li>In Christ Alone – Hymn</li>
+<li>What a Friend – Traditional</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Hymn style: block chords, 3/4 & 4/4 time</div>
+</div>
+</div>
+</div>
+
+<div class="month-block">
+<div class="month-header">MONTH 3: Mastery, Transposing & Final 10</div>
+<div class="weeks-grid">
+<div class="week-card">
+<div class="week-title">Week 9: Worship 41-44</div>
+<ul class="song-list">
+<li>Great Are You Lord – All Sons & Daughters</li>
+<li>Oceans – Hillsong United</li>
+<li>Reckless Love – Cory Asbury</li>
+<li>King of My Heart – Bethel</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Worship feel: slow, spacious, add sus chords</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 10: Classics 45-48</div>
+<ul class="song-list">
+<li>Stand By Me – Ben E. King</li>
+<li>Otherside – Red Hot Chili Peppers</li>
+<li>Save Tonight – Eagle-Eye Cherry</li>
+<li>If I Were a Boy – Beyoncé</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Transpose: play 3 songs in G major Em-C-G-D</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 11: Final Songs 49-50 + Review</div>
+<ul class="song-list">
+<li>Can You Feel The Love Tonight – Elton John</li>
+<li>Love The Way You Lie – Eminem ft. Rihanna</li>
+<li>Review: Play any 10 songs from memory</li>
+<li>Practice: Transpose Let It Be to F major</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> 50-song repertoire, transpose to 3 keys</div>
+</div>
+<div class="week-card">
+<div class="week-title">Week 12: Performance Week</div>
+<ul class="song-list">
+<li>Day 1-2: Record yourself playing 5 songs</li>
+<li>Day 3-4: Play for friend/family</li>
+<li>Day 5: Learn to add melody with RH</li>
+<li>Day 6-7: Create your own mashup!</li>
+</ul>
+<div class="goal-box"><strong>Goal:</strong> Perform confidently, improvise fills</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="daily-routine">
+<h3 style="text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem;">Daily Practice Routine: 35 Minutes</h3>
+<p style="text-align: center; color: var(--muted); margin-bottom: 1rem;">Consistency beats intensity. Do this 5-6 days per week.</p>
+<div class="routine-grid">
+<div class="routine-item">
+<div class="routine-time">5 min</div>
+<div><strong>Warm-up</strong><br>Chord transitions Am-F-C-G with metronome</div>
+</div>
+<div class="routine-item">
+<div class="routine-time">15 min</div>
+<div><strong>New Song</strong><br>Learn this week's song, hands separate then together</div>
+</div>
+<div class="routine-item">
+<div class="routine-time">10 min</div>
+<div><strong>Review</strong><br>Play 2-3 previous songs from memory</div>
+</div>
+<div class="routine-item">
+<div class="routine-time">5 min</div>
+<div><strong>Explore</strong><br>Transposing, rhythm, or improvisation</div>
+</div>
+</div>
+<div style="text-align: center; margin-top: 2rem;">
+<button class="btn" onclick="window.print()">
+<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"></path></svg>
+Print Practice Plan
+</button>
+</div>
+</div>
+</section>
+
+<section id="transpose">
+<div class="container">
+<h2 class="section-title">Interactive Transpose Tool</h2>
+<p class="section-desc">Click any key to see the vi-IV-I-V progression. Practice in C major first, then try G and F major.</p>
+<div class="transpose-tool">
+<div class="key-buttons">
+<button class="key-btn active" data-key="C">C</button>
+<button class="key-btn" data-key="G">G</button>
+<button class="key-btn" data-key="D">D</button>
+<button class="key-btn" data-key="A">A</button>
+<button class="key-btn" data-key="E">E</button>
+<button class="key-btn" data-key="F">F</button>
+<button class="key-btn" data-key="Bb">Bb</button>
+<button class="key-btn" data-key="Eb">Eb</button>
+<button class="key-btn" data-key="Ab">Ab</button>
+</div>
+<div class="transpose-display">
+<div id="currentKey">Key of C Major</div>
+<div class="chord-display" id="chordDisplay">
+<div class="chord-box">
+<span class="chord-name" id="chord1">Am</span>
+<span class="chord-degree">vi</span>
+</div>
+<div class="chord-box">
+<span class="chord-name" id="chord2">F</span>
+<span class="chord-degree">IV</span>
+</div>
+<div class="chord-box">
+<span class="chord-name" id="chord3">C</span>
+<span class="chord-degree">I</span>
+</div>
+<div class="chord-box">
+<span class="chord-name" id="chord4">G</span>
+<span class="chord-degree">V</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="library" style="background: white;">
+<div class="container">
+<h2 class="section-title">50 Song Library</h2>
+<p class="section-desc">All songs use the vi-IV-I-V progression or close variation. Original key shown, but you can play all in <span class="chord-inline">Am-F-C-G</span></p>
+<div class="library-controls">
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="Search songs or artists...">
+</div>
+<div class="filter-buttons">
+<button class="filter-btn active" data-filter="all">All Songs</button>
+<button class="filter-btn" data-filter="Pop Hits">Pop Hits</button>
+<button class="filter-btn" data-filter="Artists You Love">Your Artists</button>
+<button class="filter-btn" data-filter="Hymns + Worship">Worship</button>
+<button class="filter-btn" data-filter="Other Classics">Classics</button>
+</div>
+</div>
+<div class="song-table-container">
+<table id="songTable">
+<thead>
+<tr>
+<th>Song</th>
+<th>Artist</th>
+<th>Original Key</th>
+<th>Progression Notes</th>
+<th>Category</th>
+</tr>
+</thead>
+<tbody id="songTableBody">
+<!-- Populated by JS -->
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="tips">
+<div class="container">
+<h2 class="section-title">Practice Tips & Style Guide</h2>
+<p class="section-desc">Make these 4 chords sound different for every artist and genre</p>
+<div class="tips-grid">
+<div class="tip-card">
+<div class="tip-icon">🎤</div>
+<h3>Sia / Bruno / Aitana Style</h3>
+<p><strong>Ballad Pop:</strong> Play broken chords in right hand: 1-5-8-5 pattern. Slow tempo 65-75 BPM. Heavy sustain pedal. Let chords ring. For Bruno's "When I Was Your Man", add grace notes and rubato timing.</p>
+</div>
+<div class="tip-card">
+<div class="tip-icon">⛪</div>
+<h3>Hymns Hack</h3>
+<p><strong>Worship Style:</strong> Play block chords on beat 1, hold for full measure. Add the 2nd scale degree for "sus" sound: Csus2, Fsus2. In 3/4 time, play: bass note on 1, chord on 2-3. Makes it sound ancient and sacred.</p>
+</div>
+<div class="tip-card">
+<div class="tip-icon">🎧</div>
+<h3>Alan Walker / Becky G Groove</h3>
+<p><strong>EDM/Latin Pop:</strong> Don't play on beat 1! Play staccato chords on beats 2 and 4 only, or off-beats "and of 1, and of 2". Left hand: simple quarter-note bass C-A-F-G. This creates dance groove space.</p>
+</div>
+<div class="tip-card">
+<div class="tip-icon">🎹</div>
+<h3>Left Hand Secrets</h3>
+<p><strong>Level Up Your LH:</strong> Week 1-4: Single bass notes. Week 5-8: Octaves C-C A-A F-F G-G. Week 9-12: Add the 5th: C-G, A-E, F-C, G-D. This is called "power chord" bass and sounds huge.</p>
+</div>
+</div>
+<div class="tracker-box">
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem;">📊 Practice Tracker Idea</h3>
+<p>Create a simple chart or use a habit app. For each song, track:</p>
+<p style="margin-top: 1rem;"><strong>⭐ Learned chords</strong> → <strong>⭐⭐ Played with metronome</strong> → <strong>⭐⭐⭐ Memorized</strong> → <strong>⭐⭐⭐⭐ Performable</strong> → <strong>⭐⭐⭐⭐⭐ Transposed to new key</strong></p>
+<p style="margin-top: 1rem; color: var(--muted);">Celebrate when you hit ⭐⭐⭐ on 10 songs! You're building real repertoire.</p>
+<button class="btn btn-secondary" style="margin-top: 1.5rem;" onclick="window.print()">Print Tracker Template</button>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">You've Got This! 🎹</h3>
+<p style="opacity: 0.8; max-width: 600px; margin: 0 auto;">Master these 4 chords and you unlock 500+ songs. Practice daily, be patient with yourself, and have fun. Music is a journey, not a race.</p>
+<p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">vi-IV-I-V Piano Practice Program © 2025 | Works 100% Offline</p>
+</div>
+</footer>
+
+<script>
+const songs = [
+{ song: "Let It Be", artist: "The Beatles", key: "C major", notes: "Classic progression, straight 4 chords", cat: "Other Classics" },
+{ song: "No Woman No Cry", artist: "Bob Marley", key: "C major", notes: "Reggae feel, off-beat rhythm", cat: "Pop Hits" },
+{ song: "With or Without You", artist: "U2", key: "D major", notes: "D-Bm-G-A in D. Play in C as Am-F-C-G", cat: "Other Classics" },
+{ song: "You Gotta Be", artist: "Des'ree", key: "A major", notes: "F#m-D-A-E in A. Transpose to C", cat: "Pop Hits" },
+{ song: "Apologize", artist: "OneRepublic", key: "C# minor", notes: "Uses vi-IV-I-V variants", cat: "Pop Hits" },
+{ song: "Africa", artist: "Toto", key: "B major", notes: "G#m-E-B-F# in verse", cat: "Other Classics" },
+{ song: "Poker Face", artist: "Lady Gaga", key: "G# minor", notes: "Dance pop, synthy feel", cat: "Pop Hits" },
+{ song: "I'm Yours", artist: "Jason Mraz", key: "B major", notes: "G#m-E-B-F# loop", cat: "Pop Hits" },
+{ song: "Secrets", artist: "OneRepublic", key: "D major", notes: "Bm-G-D-A", cat: "Pop Hits" },
+{ song: "Love Me Like You Do", artist: "Ellie Goulding", key: "G# minor", notes: "50 Shades: G#m-E-B-F#", cat: "Pop Hits" },
+{ song: "She Will Be Loved", artist: "Maroon 5", key: "F major", notes: "Dm-Bb-F-C", cat: "Pop Hits" },
+{ song: "What Goes Around", artist: "Justin Timberlake", key: "C minor", notes: "Ab-Fm-Cm-Gm feel", cat: "Pop Hits" },
+{ song: "Bulletproof", artist: "La Roux", key: "C major", notes: "Am-F-C-G, synth pop", cat: "Pop Hits" },
+{ song: "The Man Who Can't Be Moved", artist: "The Script", key: "C major", notes: "Am-F-C-G", cat: "Pop Hits" },
+{ song: "When I Come Around", artist: "Green Day", key: "G major", notes: "Em-C-G-D", cat: "Other Classics" },
+{ song: "Chandelier", artist: "Sia", key: "Bb major", notes: "Gm-Eb-Bb-F. Emotional ballad", cat: "Artists You Love" },
+{ song: "Elastic Heart", artist: "Sia", key: "G major", notes: "Em-C-G-D", cat: "Artists You Love" },
+{ song: "Cheap Thrills", artist: "Sia", key: "F# major", notes: "D#m-B-F#-C#", cat: "Artists You Love" },
+{ song: "Just The Way You Are", artist: "Bruno Mars", key: "F major", notes: "Dm-Bb-F-C", cat: "Artists You Love" },
+{ song: "When I Was Your Man", artist: "Bruno Mars", key: "C major", notes: "Am-F-C-G, piano ballad", cat: "Artists You Love" },
+{ song: "Grenade", artist: "Bruno Mars", key: "D minor", notes: "Bb-Gm-Dm-Am feel", cat: "Artists You Love" },
+{ song: "Enemigos", artist: "Aitana", key: "A minor", notes: "F-Dm-Am-Em variant", cat: "Artists You Love" },
+{ song: "Sin Ti", artist: "Becky G", key: "F# minor", notes: "D-Bm-F#m-C#m", cat: "Artists You Love" },
+{ song: "Mayores", artist: "Becky G", key: "B minor", notes: "G-Em-Bm-F#m", cat: "Artists You Love" },
+{ song: "Faded", artist: "Alan Walker", key: "E minor", notes: "C-G-Dsus4/D-Em", cat: "Artists You Love" },
+{ song: "Alone", artist: "Alan Walker", key: "E minor", notes: "EDM style, spacey", cat: "Artists You Love" },
+{ song: "On My Way", artist: "Alan Walker", key: "C# minor", notes: "A-F#m-C#m-G#m", cat: "Artists You Love" },
+{ song: "The Nights", artist: "Avicii", key: "E minor", notes: "C-G-D-Em folk EDM", cat: "Pop Hits" },
+{ song: "Wake Me Up", artist: "Avicii", key: "B minor", notes: "G-D-A-Bm", cat: "Pop Hits" },
+{ song: "Demons", artist: "Imagine Dragons", key: "Eb major", notes: "Cm-Ab-Eb-Bb", cat: "Pop Hits" },
+{ song: "Radioactive", artist: "Imagine Dragons", key: "B minor", notes: "G-D-A-Bm", cat: "Pop Hits" },
+{ song: "Counting Stars", artist: "OneRepublic", key: "C# minor", notes: "A-E-B-C#m", cat: "Pop Hits" },
+{ song: "All of Me", artist: "John Legend", key: "Ab major", notes: "Fm-Db-Ab-Eb", cat: "Pop Hits" },
+{ song: "We Don't Talk Anymore", artist: "Charlie Puth", key: "C# minor", notes: "A-F#m-C#m-G#m", cat: "Pop Hits" },
+{ song: "Amazing Grace", artist: "Traditional Hymn", key: "G major", notes: "Em-C-G-D, 3/4 time", cat: "Hymns + Worship" },
+{ song: "How Great Thou Art", artist: "Hymn", key: "Bb major", notes: "Gm-Eb-Bb-F", cat: "Hymns + Worship" },
+{ song: "10,000 Reasons", artist: "Matt Redman", key: "G major", notes: "Em-C-G-D", cat: "Hymns + Worship" },
+{ song: "Cornerstone", artist: "Hillsong", key: "C major", notes: "Am-F-C-G", cat: "Hymns + Worship" },
+{ song: "In Christ Alone", artist: "Hymn", key: "D major", notes: "Bm-G-D-A", cat: "Hymns + Worship" },
+{ song: "What a Friend We Have in Jesus", artist: "Traditional", key: "F major", notes: "Dm-Bb-F-C", cat: "Hymns + Worship" },
+{ song: "Great Are You Lord", artist: "All Sons & Daughters", key: "G major", notes: "Em-C-G-D", cat: "Hymns + Worship" },
+{ song: "Oceans", artist: "Hillsong United", key: "B minor", notes: "G-D-A-Bm", cat: "Hymns + Worship" },
+{ song: "Reckless Love", artist: "Cory Asbury", key: "F# major", notes: "D#m-B-F#-C#", cat: "Hymns + Worship" },
+{ song: "King of My Heart", artist: "Bethel Music", key: "G major", notes: "Em-C-G-D", cat: "Hymns + Worship" },
+{ song: "Stand By Me", artist: "Ben E. King", key: "A major", notes: "F#m-D-A-E. Iconic bass line", cat: "Other Classics" },
+{ song: "Otherside", artist: "Red Hot Chili Peppers", key: "E minor", notes: "C-G-D-Em verse", cat: "Other Classics" },
+{ song: "Save Tonight", artist: "Eagle-Eye Cherry", key: "A minor", notes: "F-C-G-Am variant", cat: "Other Classics" },
+{ song: "If I Were a Boy", artist: "Beyoncé", key: "Gb major", notes: "Ebm-Cb-Gb-Db", cat: "Pop Hits" },
+{ song: "Can You Feel The Love Tonight", artist: "Elton John", key: "Bb major", notes: "Gm-Eb-Bb-F", cat: "Other Classics" },
+{ song: "Love The Way You Lie", artist: "Eminem ft. Rihanna", key: "G minor", notes: "Eb-Cm-Gm-Dm", cat: "Pop Hits" }
+];
+
+const transposeData = {
+'C': ['Am', 'F', 'C', 'G'],
+'G': ['Em', 'C', 'G', 'D'],
+'D': ['Bm', 'G', 'D', 'A'],
+'A': ['F#m', 'D', 'A', 'E'],
+'E': ['C#m', 'A', 'E', 'B'],
+'F': ['Dm', 'Bb', 'F', 'C'],
+'Bb': ['Gm', 'Eb', 'Bb', 'F'],
+'Eb': ['Cm', 'Ab', 'Eb', 'Bb'],
+'Ab': ['Fm', 'Db', 'Ab', 'Eb']
+};
+
+function renderSongs(filter = 'all', search = '') {
+const tbody = document.getElementById('songTableBody');
+const filtered = songs.filter(s => {
+const matchFilter = filter === 'all' || s.cat === filter;
+const matchSearch = search === '' || 
+s.song.toLowerCase().includes(search.toLowerCase()) || 
+s.artist.toLowerCase().includes(search.toLowerCase());
+return matchFilter && matchSearch;
+});
+
+tbody.innerHTML = filtered.map(s => {
+const catClass = s.cat === 'Pop Hits' ? 'cat-pop' : 
+s.cat === 'Artists You Love' ? 'cat-artist' :
+s.cat === 'Hymns + Worship' ? 'cat-hymn' : 'cat-classic';
+return `
+<tr>
+<td data-label="Song">${s.song}</td>
+<td data-label="Artist">${s.artist}</td>
+<td data-label="Original Key">${s.key}</td>
+<td data-label="Notes">${s.notes}</td>
+<td data-label="Category"><span class="category-badge ${catClass}">${s.cat}</span></td>
+</tr>
+`;
+}).join('');
+
+if (filtered.length === 0) {
+tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--muted);">No songs found. Try a different search or filter.</td></tr>`;
+}
+}
+
+// Initial render
+renderSongs();
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+btn.addEventListener('click', () => {
+document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+const searchVal = document.getElementById('searchInput').value;
+renderSongs(btn.dataset.filter, searchVal);
+});
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+renderSongs(activeFilter, e.target.value);
+});
+
+// Transpose tool
+document.querySelectorAll('.key-btn').forEach(btn => {
+btn.addEventListener('click', () => {
+document.querySelectorAll('.key-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+const key = btn.dataset.key;
+const chords = transposeData[key];
+document.getElementById('currentKey').textContent = `Key of ${key} Major`;
+document.getElementById('chord1').textContent = chords[0];
+document.getElementById('chord2').textContent = chords[1];
+document.getElementById('chord3').textContent = chords[2];
+document.getElementById('chord4').textContent = chords[3];
+});
+});
+</script>
+</body>
+</html>
