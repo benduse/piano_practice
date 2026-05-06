@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transpose Tool – VI-IV-I-V Piano</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header>
+<div class="container">
+<div class="header-content">
+<h1>VI-IV-I-V Piano Practice Program</h1>
+<p class="subtitle">Master Am-F-C-G with 50 songs in 3 months</p>
+<div class="header-chords">
+<div class="chord-pill">Am</div>
+<div class="chord-pill">F</div>
+<div class="chord-pill">C</div>
+<div class="chord-pill">G</div>
+</div>
+</div>
+</div>
+</header>
+
+<nav>
+<div class="container">
+<div class="nav-links">
+<a href="index.html">Overview</a>
+<a href="practice_plan.html">3-Month Plan</a>
+<a href="transpose_tool.html" class="active">Transpose Tool</a>
+<a href="songs_library.html">Song Library</a>
+<a href="practice_tips.html">Practice Tips</a>
+</div>
+</div>
+</nav>
+
+<section>
+<div class="container">
+<h2 class="section-title">Interactive Transpose Tool</h2>
+<p class="section-desc">Click any key to see the vi-IV-I-V progression. Practice in C major first, then try G and F major.</p>
+<div class="transpose-tool">
+<div class="key-buttons">
+<button class="key-btn active" data-key="C">C</button>
+<button class="key-btn" data-key="G">G</button>
+<button class="key-btn" data-key="D">D</button>
+<button class="key-btn" data-key="A">A</button>
+<button class="key-btn" data-key="E">E</button>
+<button class="key-btn" data-key="F">F</button>
+<button class="key-btn" data-key="Bb">Bb</button>
+<button class="key-btn" data-key="Eb">Eb</button>
+<button class="key-btn" data-key="Ab">Ab</button>
+</div>
+<div class="transpose-display">
+<div id="currentKey">Key of C Major</div>
+<div class="chord-display" id="chordDisplay">
+<div class="chord-box"><span class="chord-name" id="chord1">Am</span><span class="chord-degree">vi</span></div>
+<div class="chord-box"><span class="chord-name" id="chord2">F</span><span class="chord-degree">IV</span></div>
+<div class="chord-box"><span class="chord-name" id="chord3">C</span><span class="chord-degree">I</span></div>
+<div class="chord-box"><span class="chord-name" id="chord4">G</span><span class="chord-degree">V</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="container">
+<h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">You've Got This! 🎹</h3>
+<p style="opacity: 0.8; max-width: 600px; margin: 0 auto;">Master these 4 chords and you unlock 500+ songs. Practice daily, be patient with yourself, and have fun. Music is a journey, not a race.</p>
+<p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">vi-IV-I-V Piano Practice Program © 2026</p>
+</div>
+</footer>
+<script>
+const transposeData = {
+  'C': ['Am', 'F', 'C', 'G'],
+  'G': ['Em', 'C', 'G', 'D'],
+  'D': ['Bm', 'G', 'D', 'A'],
+  'A': ['F#m', 'D', 'A', 'E'],
+  'E': ['C#m', 'A', 'E', 'B'],
+  'F': ['Dm', 'Bb', 'F', 'C'],
+  'Bb': ['Gm', 'Eb', 'Bb', 'F'],
+  'Eb': ['Cm', 'Ab', 'Eb', 'Bb'],
+  'Ab': ['Fm', 'Db', 'Ab', 'Eb']
+};
+
+document.querySelectorAll('.key-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.key-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const key = btn.dataset.key;
+    const chords = transposeData[key];
+    document.getElementById('currentKey').textContent = `Key of ${key} Major`;
+    document.getElementById('chord1').textContent = chords[0];
+    document.getElementById('chord2').textContent = chords[1];
+    document.getElementById('chord3').textContent = chords[2];
+    document.getElementById('chord4').textContent = chords[3];
+  });
+});
+</script>
+</body>
+</html>

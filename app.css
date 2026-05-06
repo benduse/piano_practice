@@ -122,6 +122,13 @@ transition: color 0.2s;
 color: var(--primary);
 }
 
+.nav-links a.active {
+color: var(--primary);
+font-weight: 600;
+border-bottom: 2px solid var(--primary);
+padding-bottom: 2px;
+}
+
 section {
 padding: 4rem 0;
 }
