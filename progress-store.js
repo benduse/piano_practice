@@ -1,15 +1,3 @@
-// progress-store.js — shared storage module
-// Used by: plan-timeline.js, index.html dashboard widget
-// Storage key: 'piano_progress'
-//
-// Schema:
-// {
-//   completedWeeks:  number[],          // e.g. [1, 2, 3]
-//   completedTasks:  { [weekId]: number[] }, // e.g. { "1": [0, 2] }
-//   startDate:       string | null,     // ISO date "YYYY-MM-DD"
-//   streakDates:     string[],          // ISO dates of each practice session
-// }
-
 const PROGRESS_KEY = 'piano_progress';
 const TOTAL_WEEKS  = 12;
 const DAYS_PER_WEEK = 7;
