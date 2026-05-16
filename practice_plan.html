@@ -1,232 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3-Month Plan – VI-IV-I-V Piano</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3-Month Plan – VI-IV-I-V Piano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="plan-timeline.css">
 </head>
 <body>
+
 <header>
-<div class="container">
-<div class="header-content">
-<h1>VI-IV-I-V Piano Practice Program</h1>
-<p class="subtitle">Master Am-F-C-G with 50 songs in 3 months</p>
-<div class="header-chords">
-<div class="chord-pill">Am</div>
-<div class="chord-pill">F</div>
-<div class="chord-pill">C</div>
-<div class="chord-pill">G</div>
-</div>
-</div>
-</div>
+  <div class="header-inner">
+    <div class="header-brand">
+      <h1>🎹 VI-IV-I-V Piano</h1>
+      <p>Master Am-F-C-G with 50 songs in 3 months</p>
+    </div>
+    <nav aria-label="Main navigation">
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="practice_plan.html" class="active">3-Month Plan</a></li>
+        <li><a href="transpose_tool.html">Transpose Tool</a></li>
+        <li><a href="songs_library.html">Song Library</a></li>
+        <li><a href="practice_tips.html">Practice Tips</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
-<nav>
-<div class="container">
-<div class="nav-links">
-<a href="index.html">Overview</a>
-<a href="practice_plan.html" class="active">3-Month Plan</a>
-<a href="transpose_tool.html">Transpose Tool</a>
-<a href="songs_library.html">Song Library</a>
-<a href="practice_tips.html">Practice Tips</a>
-</div>
-</div>
-</nav>
+<main>
+  <section class="bg-white">
+    <div class="container">
+      <h2 class="section-title">3-Month Practice Program</h2>
+      <p class="section-desc">Follow this structured plan to go from beginner to confidently playing 50 songs. Practice 30–45 minutes daily.</p>
 
-<section style="background: white;">
-<div class="container">
-<h2 class="section-title">3-Month Practice Program</h2>
-<p class="section-desc">Follow this structured plan to go from beginner to confidently playing 50 songs. Practice 30-45 minutes daily.</p>
-<div class="timeline">
-<div class="month-block">
-<div class="month-header">MONTH 1: Foundation & First 15 Songs</div>
-<div class="weeks-grid">
-<div class="week-card">
-<div class="week-title">Week 1: Chord Shapes</div>
-<ul class="song-list">
-<li>Learn C, Am, F, G in root position</li>
-<li>Practice chord transitions Am→F→C→G</li>
-<li>Play with metronome: 60 BPM</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Clean transitions, 1 chord per measure</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 2: Songs 1-4</div>
-<ul class="song-list">
-<li>Let It Be – The Beatles</li>
-<li>No Woman No Cry – Bob Marley</li>
-<li>With or Without You – U2</li>
-<li>You Gotta Be – Des'ree</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Play 4 songs start to finish, simple rhythm</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 3: Songs 5-10</div>
-<ul class="song-list">
-<li>Apologize – OneRepublic</li>
-<li>Africa – Toto</li>
-<li>Poker Face – Lady Gaga</li>
-<li>I'm Yours – Jason Mraz</li>
-<li>Secrets – OneRepublic</li>
-<li>Love Me Like You Do – Ellie Goulding</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Add left-hand bass notes C-A-F-G</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 4: Songs 11-15</div>
-<ul class="song-list">
-<li>She Will Be Loved – Maroon 5</li>
-<li>What Goes Around – Justin Timberlake</li>
-<li>Bulletproof – La Roux</li>
-<li>The Man Who Can't Be Moved – The Script</li>
-<li>When I Come Around – Green Day</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Introduce inversions: start F chord on A</div>
-</div>
-</div>
-</div>
+      <!-- Timeline renders here -->
+      <div id="timeline-root"></div>
 
-<div class="month-block">
-<div class="month-header">MONTH 2: Rhythm, Inversions & Artists You Love</div>
-<div class="weeks-grid">
-<div class="week-card">
-<div class="week-title">Week 5: Songs 16-22</div>
-<ul class="song-list">
-<li>Chandelier – Sia</li>
-<li>Elastic Heart – Sia</li>
-<li>Cheap Thrills – Sia</li>
-<li>Just The Way You Are – Bruno Mars</li>
-<li>When I Was Your Man – Bruno Mars</li>
-<li>Grenade – Bruno Mars</li>
-<li>Enemigos – Aitana</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Sia ballad style: broken chords RH, sustain pedal</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 6: Songs 23-28</div>
-<ul class="song-list">
-<li>Sin Ti – Becky G</li>
-<li>Mayores – Becky G</li>
-<li>Faded – Alan Walker</li>
-<li>Alone – Alan Walker</li>
-<li>On My Way – Alan Walker</li>
-<li>The Nights – Avicii</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> EDM groove: play chords on beats 2 & 4 only</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 7: Songs 29-34</div>
-<ul class="song-list">
-<li>Wake Me Up – Avicii</li>
-<li>Demons – Imagine Dragons</li>
-<li>Radioactive – Imagine Dragons</li>
-<li>Counting Stars – OneRepublic</li>
-<li>All of Me – John Legend</li>
-<li>We Don't Talk Anymore – Charlie Puth</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Syncopated pop rhythms, anticipate chord changes</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 8: Hymns Intro 35-40</div>
-<ul class="song-list">
-<li>Amazing Grace – Traditional</li>
-<li>How Great Thou Art – Hymn</li>
-<li>10,000 Reasons – Matt Redman</li>
-<li>Cornerstone – Hillsong</li>
-<li>In Christ Alone – Hymn</li>
-<li>What a Friend – Traditional</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Hymn style: block chords, 3/4 & 4/4 time</div>
-</div>
-</div>
-</div>
-
-<div class="month-block">
-<div class="month-header">MONTH 3: Mastery, Transposing & Final 10</div>
-<div class="weeks-grid">
-<div class="week-card">
-<div class="week-title">Week 9: Worship 41-44</div>
-<ul class="song-list">
-<li>Great Are You Lord – All Sons & Daughters</li>
-<li>Oceans – Hillsong United</li>
-<li>Reckless Love – Cory Asbury</li>
-<li>King of My Heart – Bethel</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Worship feel: slow, spacious, add sus chords</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 10: Classics 45-48</div>
-<ul class="song-list">
-<li>Stand By Me – Ben E. King</li>
-<li>Otherside – Red Hot Chili Peppers</li>
-<li>Save Tonight – Eagle-Eye Cherry</li>
-<li>If I Were a Boy – Beyoncé</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Transpose: play 3 songs in G major Em-C-G-D</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 11: Final Songs 49-50 + Review</div>
-<ul class="song-list">
-<li>Can You Feel The Love Tonight – Elton John</li>
-<li>Love The Way You Lie – Eminem ft. Rihanna</li>
-<li>Review: Play any 10 songs from memory</li>
-<li>Practice: Transpose Let It Be to F major</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> 50-song repertoire, transpose to 3 keys</div>
-</div>
-<div class="week-card">
-<div class="week-title">Week 12: Performance Week</div>
-<ul class="song-list">
-<li>Day 1-2: Record yourself playing 5 songs</li>
-<li>Day 3-4: Play for friend/family</li>
-<li>Day 5: Learn to add melody with RH</li>
-<li>Day 6-7: Create your own mashup!</li>
-</ul>
-<div class="goal-box"><strong>Goal:</strong> Perform confidently, improvise fills</div>
-</div>
-</div>
-</div>
-</div>
-
-<div class="daily-routine">
-<h3 style="text-align: center; font-size: 1.5rem; margin-bottom: 0.5rem;">Daily Practice Routine: 35 Minutes</h3>
-<p style="text-align: center; color: var(--muted); margin-bottom: 1rem;">Consistency beats intensity. Do this 5-6 days per week.</p>
-<div class="routine-grid">
-<div class="routine-item">
-<div class="routine-time">5 min</div>
-<div><strong>Warm-up</strong><br>Chord transitions Am-F-C-G with metronome</div>
-</div>
-<div class="routine-item">
-<div class="routine-time">15 min</div>
-<div><strong>New Song</strong><br>Learn this week's song, hands separate then together</div>
-</div>
-<div class="routine-item">
-<div class="routine-time">10 min</div>
-<div><strong>Review</strong><br>Play 2-3 previous songs from memory</div>
-</div>
-<div class="routine-item">
-<div class="routine-time">5 min</div>
-<div><strong>Explore</strong><br>Transposing, rhythm, or improvisation</div>
-</div>
-</div>
-<div style="text-align: center; margin-top: 2rem;">
-<button class="btn" onclick="window.print()">
-<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"></path></svg>
-Print Practice Plan
-</button>
-</div>
-</div>
-</div>
-</section>
+      <!-- Daily routine — static, not data-driven -->
+      <div class="daily-routine">
+        <h3>Daily Practice Routine: 35 Minutes</h3>
+        <p>Consistency beats intensity. Do this 5–6 days per week.</p>
+        <div class="routine-grid">
+          <div class="routine-item">
+            <div class="routine-time">5 min</div>
+            <div><strong>Warm-up</strong><br>Chord transitions Am-F-C-G with metronome</div>
+          </div>
+          <div class="routine-item">
+            <div class="routine-time">15 min</div>
+            <div><strong>New Song</strong><br>Learn this week's song, hands separate then together</div>
+          </div>
+          <div class="routine-item">
+            <div class="routine-time">10 min</div>
+            <div><strong>Review</strong><br>Play 2–3 previous songs from memory</div>
+          </div>
+          <div class="routine-item">
+            <div class="routine-time">5 min</div>
+            <div><strong>Explore</strong><br>Transposing, rhythm, or improvisation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <footer>
-<div class="container">
-<h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">You've Got This! 🎹</h3>
-<p style="opacity: 0.8; max-width: 600px; margin: 0 auto;">Master these 4 chords and you unlock 500+ songs. Practice daily, be patient with yourself, and have fun. Music is a journey, not a race.</p>
-<p style="margin-top: 2rem; opacity: 0.6; font-size: 0.9rem;">vi-IV-I-V Piano Practice Program © 2026</p>
-</div>
+  <div class="container">
+    <h3 class="footer-title">You've Got This! 🎹</h3>
+    <p class="footer-desc">Master these 4 chords and you unlock 500+ songs. Practice daily, be patient with yourself, and have fun. Music is a journey, not a race.</p>
+    <p class="footer-copy">vi-IV-I-V Piano Practice Program © 2026</p>
+  </div>
 </footer>
+
+<!-- Confetti canvas (used by plan-timeline.js) -->
+<canvas id="tl-confetti" aria-hidden="true"></canvas>
+
+<script src="app.js"></script>
+<script src="plan-data.js"></script>
+<script src="progress-store.js"></script>
+<script src="plan-timeline.js"></script>
 </body>
 </html>
