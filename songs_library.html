@@ -79,62 +79,62 @@
 <script src="playables.js"></script>
 <script>
 const songs = [
-  { song: "Let It Be", artist: "The Beatles", key: "C major", notes: "Classic progression, straight 4 chords", cat: "Other Classics" },
-  { song: "No Woman No Cry", artist: "Bob Marley", key: "C major", notes: "Reggae feel, off-beat rhythm", cat: "Pop Hits" },
-  { song: "With or Without You", artist: "U2", key: "D major", notes: "D-Bm-G-A in D. Play in C as Am-F-C-G", cat: "Other Classics" },
-  { song: "You Gotta Be", artist: "Des'ree", key: "A major", notes: "F#m-D-A-E in A. Transpose to C", cat: "Pop Hits" },
-  { song: "Apologize", artist: "OneRepublic", key: "C# minor", notes: "Uses vi-IV-I-V variants", cat: "Pop Hits" },
-  { song: "Africa", artist: "Toto", key: "B major", notes: "G#m-E-B-F# in verse", cat: "Other Classics" },
-  { song: "Poker Face", artist: "Lady Gaga", key: "G# minor", notes: "Dance pop, synthy feel", cat: "Pop Hits" },
-  { song: "I'm Yours", artist: "Jason Mraz", key: "B major", notes: "G#m-E-B-F# loop", cat: "Pop Hits" },
-  { song: "Secrets", artist: "OneRepublic", key: "D major", notes: "Bm-G-D-A", cat: "Pop Hits" },
-  { song: "Love Me Like You Do", artist: "Ellie Goulding", key: "G# minor", notes: "50 Shades: G#m-E-B-F#", cat: "Pop Hits" },
-  { song: "She Will Be Loved", artist: "Maroon 5", key: "F major", notes: "Dm-Bb-F-C", cat: "Pop Hits" },
-  { song: "What Goes Around", artist: "Justin Timberlake", key: "C minor", notes: "Ab-Fm-Cm-Gm feel", cat: "Pop Hits" },
-  { song: "Bulletproof", artist: "La Roux", key: "C major", notes: "Am-F-C-G, synth pop", cat: "Pop Hits" },
-  { song: "The Man Who Can't Be Moved", artist: "The Script", key: "C major", notes: "Am-F-C-G", cat: "Pop Hits" },
-  { song: "When I Come Around", artist: "Green Day", key: "G major", notes: "Em-C-G-D", cat: "Other Classics" },
-  { song: "Chandelier", artist: "Sia", key: "Bb major", notes: "Gm-Eb-Bb-F. Emotional ballad", cat: "Artists You Love" },
-  { song: "Elastic Heart", artist: "Sia", key: "G major", notes: "Em-C-G-D", cat: "Artists You Love" },
-  { song: "Cheap Thrills", artist: "Sia", key: "F# major", notes: "D#m-B-F#-C#", cat: "Artists You Love" },
-  { song: "Just The Way You Are", artist: "Bruno Mars", key: "F major", notes: "Dm-Bb-F-C", cat: "Artists You Love" },
-  { song: "When I Was Your Man", artist: "Bruno Mars", key: "C major", notes: "Am-F-C-G, piano ballad", cat: "Artists You Love" },
-  { song: "Grenade", artist: "Bruno Mars", key: "D minor", notes: "Bb-Gm-Dm-Am feel", cat: "Artists You Love" },
-  { song: "Enemigos", artist: "Aitana", key: "A minor", notes: "F-Dm-Am-Em variant", cat: "Artists You Love" },
-  { song: "Sin Ti", artist: "Becky G", key: "F# minor", notes: "D-Bm-F#m-C#m", cat: "Artists You Love" },
-  { song: "Mayores", artist: "Becky G", key: "B minor", notes: "G-Em-Bm-F#m", cat: "Artists You Love" },
-  { song: "Faded", artist: "Alan Walker", key: "E minor", notes: "C-G-Dsus4/D-Em", cat: "Artists You Love" },
-  { song: "Alone", artist: "Alan Walker", key: "E minor", notes: "EDM style, spacey", cat: "Artists You Love" },
-  { song: "On My Way", artist: "Alan Walker", key: "C# minor", notes: "A-F#m-C#m-G#m", cat: "Artists You Love" },
-  { song: "The Nights", artist: "Avicii", key: "E minor", notes: "C-G-D-Em folk EDM", cat: "Pop Hits" },
-  { song: "Wake Me Up", artist: "Avicii", key: "B minor", notes: "G-D-A-Bm", cat: "Pop Hits" },
-  { song: "Demons", artist: "Imagine Dragons", key: "Eb major", notes: "Cm-Ab-Eb-Bb", cat: "Pop Hits" },
-  { song: "Radioactive", artist: "Imagine Dragons", key: "B minor", notes: "G-D-A-Bm", cat: "Pop Hits" },
-  { song: "Counting Stars", artist: "OneRepublic", key: "C# minor", notes: "A-E-B-C#m", cat: "Pop Hits" },
-  { song: "All of Me", artist: "John Legend", key: "Ab major", notes: "Fm-Db-Ab-Eb", cat: "Pop Hits" },
-  { song: "We Don't Talk Anymore", artist: "Charlie Puth", key: "C# minor", notes: "A-F#m-C#m-G#m", cat: "Pop Hits" },
-  { song: "Amazing Grace", artist: "Traditional Hymn", key: "G major", notes: "Em-C-G-D, 3/4 time", cat: "Hymns + Worship" },
-  { song: "How Great Thou Art", artist: "Hymn", key: "Bb major", notes: "Gm-Eb-Bb-F", cat: "Hymns + Worship" },
-  { song: "10,000 Reasons", artist: "Matt Redman", key: "G major", notes: "Em-C-G-D", cat: "Hymns + Worship" },
-  { song: "Cornerstone", artist: "Hillsong", key: "C major", notes: "Am-F-C-G", cat: "Hymns + Worship" },
-  { song: "In Christ Alone", artist: "Hymn", key: "D major", notes: "Bm-G-D-A", cat: "Hymns + Worship" },
-  { song: "What a Friend We Have in Jesus", artist: "Traditional", key: "F major", notes: "Dm-Bb-F-C", cat: "Hymns + Worship" },
-  { song: "Great Are You Lord", artist: "All Sons & Daughters", key: "G major", notes: "Em-C-G-D", cat: "Hymns + Worship" },
-  { song: "Oceans", artist: "Hillsong United", key: "B minor", notes: "G-D-A-Bm", cat: "Hymns + Worship" },
-  { song: "Reckless Love", artist: "Cory Asbury", key: "F# major", notes: "D#m-B-F#-C#", cat: "Hymns + Worship" },
-  { song: "King of My Heart", artist: "Bethel Music", key: "G major", notes: "Em-C-G-D", cat: "Hymns + Worship" },
-  { song: "Stand By Me", artist: "Ben E. King", key: "A major", notes: "F#m-D-A-E. Iconic bass line", cat: "Other Classics" },
-  { song: "Otherside", artist: "Red Hot Chili Peppers", key: "E minor", notes: "C-G-D-Em verse", cat: "Other Classics" },
-  { song: "Save Tonight", artist: "Eagle-Eye Cherry", key: "A minor", notes: "F-C-G-Am variant", cat: "Other Classics" },
-  { song: "If I Were a Boy", artist: "Beyoncé", key: "Gb major", notes: "Ebm-Cb-Gb-Db", cat: "Pop Hits" },
-  { song: "Can You Feel The Love Tonight", artist: "Elton John", key: "Bb major", notes: "Gm-Eb-Bb-F", cat: "Other Classics" },
-  { song: "Love The Way You Lie", artist: "Eminem ft. Rihanna", key: "G minor", notes: "Eb-Cm-Gm-Dm", cat: "Pop Hits" }
+  { song: "Let It Be", artist: "The Beatles", key: "C major", progresson: "Classic progression, straight 4 chords", category: "Other Classics" },
+  { song: "No Woman No Cry", artist: "Bob Marley", key: "C major", progresson: "Reggae feel, off-beat rhythm", category: "Pop Hits" },
+  { song: "With or Without You", artist: "U2", key: "D major", progresson: "D-Bm-G-A in D. Play in C as Am-F-C-G", category: "Other Classics" },
+  { song: "You Gotta Be", artist: "Des'ree", key: "A major", progresson: "F#m-D-A-E in A. Transpose to C", category: "Pop Hits" },
+  { song: "Apologize", artist: "OneRepublic", key: "C# minor", progresson: "Uses vi-IV-I-V variants", category: "Pop Hits" },
+  { song: "Africa", artist: "Toto", key: "B major", progresson: "G#m-E-B-F# in verse", category: "Other Classics" },
+  { song: "Poker Face", artist: "Lady Gaga", key: "G# minor", progresson: "Dance pop, synthy feel", category: "Pop Hits" },
+  { song: "I'm Yours", artist: "Jason Mraz", key: "B major", progresson: "G#m-E-B-F# loop", category: "Pop Hits" },
+  { song: "Secrets", artist: "OneRepublic", key: "D major", progresson: "Bm-G-D-A", category: "Pop Hits" },
+  { song: "Love Me Like You Do", artist: "Ellie Goulding", key: "G# minor", progresson: "50 Shades: G#m-E-B-F#", category: "Pop Hits" },
+  { song: "She Will Be Loved", artist: "Maroon 5", key: "F major", progresson: "Dm-Bb-F-C", category: "Pop Hits" },
+  { song: "What Goes Around", artist: "Justin Timberlake", key: "C minor", progresson: "Ab-Fm-Cm-Gm feel", category: "Pop Hits" },
+  { song: "Bulletproof", artist: "La Roux", key: "C major", progresson: "Am-F-C-G, synth pop", category: "Pop Hits" },
+  { song: "The Man Who Can't Be Moved", artist: "The Script", key: "C major", progresson: "Am-F-C-G", category: "Pop Hits" },
+  { song: "When I Come Around", artist: "Green Day", key: "G major", progresson: "Em-C-G-D", category: "Other Classics" },
+  { song: "Chandelier", artist: "Sia", key: "Bb major", progresson: "Gm-Eb-Bb-F. Emotional ballad", category: "Artists You Love" },
+  { song: "Elastic Heart", artist: "Sia", key: "G major", progresson: "Em-C-G-D", category: "Artists You Love" },
+  { song: "Cheap Thrills", artist: "Sia", key: "F# major", progresson: "D#m-B-F#-C#", category: "Artists You Love" },
+  { song: "Just The Way You Are", artist: "Bruno Mars", key: "F major", progresson: "Dm-Bb-F-C", category: "Artists You Love" },
+  { song: "When I Was Your Man", artist: "Bruno Mars", key: "C major", progresson: "Am-F-C-G, piano ballad", category: "Artists You Love" },
+  { song: "Grenade", artist: "Bruno Mars", key: "D minor", progresson: "Bb-Gm-Dm-Am feel", category: "Artists You Love" },
+  { song: "Enemigos", artist: "Aitana", key: "A minor", progresson: "F-Dm-Am-Em variant", category: "Artists You Love" },
+  { song: "Sin Ti", artist: "Becky G", key: "F# minor", progresson: "D-Bm-F#m-C#m", category: "Artists You Love" },
+  { song: "Mayores", artist: "Becky G", key: "B minor", progresson: "G-Em-Bm-F#m", category: "Artists You Love" },
+  { song: "Faded", artist: "Alan Walker", key: "E minor", progresson: "C-G-Dsus4/D-Em", category: "Artists You Love" },
+  { song: "Alone", artist: "Alan Walker", key: "E minor", progresson: "EDM style, spacey", category: "Artists You Love" },
+  { song: "On My Way", artist: "Alan Walker", key: "C# minor", progresson: "A-F#m-C#m-G#m", category: "Artists You Love" },
+  { song: "The Nights", artist: "Avicii", key: "E minor", progresson: "C-G-D-Em folk EDM", category: "Pop Hits" },
+  { song: "Wake Me Up", artist: "Avicii", key: "B minor", progresson: "G-D-A-Bm", category: "Pop Hits" },
+  { song: "Demons", artist: "Imagine Dragons", key: "Eb major", progresson: "Cm-Ab-Eb-Bb", category: "Pop Hits" },
+  { song: "Radioactive", artist: "Imagine Dragons", key: "B minor", progresson: "G-D-A-Bm", category: "Pop Hits" },
+  { song: "Counting Stars", artist: "OneRepublic", key: "C# minor", progresson: "A-E-B-C#m", category: "Pop Hits" },
+  { song: "All of Me", artist: "John Legend", key: "Ab major", progresson: "Fm-Db-Ab-Eb", category: "Pop Hits" },
+  { song: "We Don't Talk Anymore", artist: "Charlie Puth", key: "C# minor", progresson: "A-F#m-C#m-G#m", category: "Pop Hits" },
+  { song: "Amazing Grace", artist: "Traditional Hymn", key: "G major", progresson: "Em-C-G-D, 3/4 time", category: "Hymns + Worship" },
+  { song: "How Great Thou Art", artist: "Hymn", key: "Bb major", progresson: "Gm-Eb-Bb-F", category: "Hymns + Worship" },
+  { song: "10,000 Reasons", artist: "Matt Redman", key: "G major", progresson: "Em-C-G-D", category: "Hymns + Worship" },
+  { song: "Cornerstone", artist: "Hillsong", key: "C major", progresson: "Am-F-C-G", category: "Hymns + Worship" },
+  { song: "In Christ Alone", artist: "Hymn", key: "D major", progresson: "Bm-G-D-A", category: "Hymns + Worship" },
+  { song: "What a Friend We Have in Jesus", artist: "Traditional", key: "F major", progresson: "Dm-Bb-F-C", category: "Hymns + Worship" },
+  { song: "Great Are You Lord", artist: "All Sons & Daughters", key: "G major", progresson: "Em-C-G-D", category: "Hymns + Worship" },
+  { song: "Oceans", artist: "Hillsong United", key: "B minor", progresson: "G-D-A-Bm", category: "Hymns + Worship" },
+  { song: "Reckless Love", artist: "Cory Asbury", key: "F# major", progresson: "D#m-B-F#-C#", category: "Hymns + Worship" },
+  { song: "King of My Heart", artist: "Bethel Music", key: "G major", progresson: "Em-C-G-D", category: "Hymns + Worship" },
+  { song: "Stand By Me", artist: "Ben E. King", key: "A major", progresson: "F#m-D-A-E. Iconic bass line", category: "Other Classics" },
+  { song: "Otherside", artist: "Red Hot Chili Peppers", key: "E minor", progresson: "C-G-D-Em verse", category: "Other Classics" },
+  { song: "Save Tonight", artist: "Eagle-Eye Cherry", key: "A minor", progresson: "F-C-G-Am variant", category: "Other Classics" },
+  { song: "If I Were a Boy", artist: "Beyoncé", key: "Gb major", progresson: "Ebm-Cb-Gb-Db", category: "Pop Hits" },
+  { song: "Can You Feel The Love Tonight", artist: "Elton John", key: "Bb major", progresson: "Gm-Eb-Bb-F", category: "Other Classics" },
+  { song: "Love The Way You Lie", artist: "Eminem ft. Rihanna", key: "G minor", progresson: "Eb-Cm-Gm-Dm", category: "Pop Hits" }
 ];
 
 function renderSongs(filter = 'all', search = '') {
   const tbody = document.getElementById('songTableBody');
   const filtered = songs.filter(s => {
-    const matchFilter = filter === 'all' || s.cat === filter;
+    const matchFilter = filter === 'all' || s.category === filter;
     const matchSearch = search === '' ||
       s.song.toLowerCase().includes(search.toLowerCase()) ||
       s.artist.toLowerCase().includes(search.toLowerCase());
@@ -142,15 +142,15 @@ function renderSongs(filter = 'all', search = '') {
   });
 
   tbody.innerHTML = filtered.map(s => {
-    const catClass = s.cat === 'Pop Hits' ? 'cat-pop' :
-      s.cat === 'Artists You Love' ? 'cat-artist' :
-      s.cat === 'Hymns + Worship' ? 'cat-hymn' : 'cat-classic';
+    const catClass = s.category === 'Pop Hits' ? 'category-pop' :
+      s.category === 'Artists You Love' ? 'category-artist' :
+      s.category === 'Hymns + Worship' ? 'category-hymn' : 'category-classic';
     return `<tr>
       <td data-label="Song">${s.song}</td>
       <td data-label="Artist">${s.artist}</td>
       <td data-label="Original Key">${s.key}</td>
-      <td data-label="Notes">${s.notes}</td>
-      <td data-label="Category"><span class="category-badge ${catClass}">${s.cat}</span></td>
+      <td data-label="Notes">${s.progresson}</td>
+      <td data-label="Category"><span class="category-badge ${catClass}">${s.category}</span></td>
     </tr>`;
   }).join('');
 
